@@ -1,7 +1,7 @@
 public class Achievement {
     private String name;
     private String description;
-    private int tier; // 0: bronze, 1: silver, 2: gold // ou algo assim
+    private int tier; // 0: bronze, 1: silver, 2: gold ou algo assim
 
     public Achievement(String name, String description) {
         this.name        = name;
@@ -34,5 +34,12 @@ public class Achievement {
 
     private void setTier(int tier) {
         this.tier = tier;
+    }
+
+    // aumenta o nível de uma conquista
+    // retorna o nível do novo tier
+    private int upgradeTier() {
+        if (this.tier < 2) this.tier = this.tier+1;
+        return this.tier;
     }
 }
