@@ -1,0 +1,5 @@
+# arquivos de configuração do vscode
+.vscode/
+
+# artefatos gerados pelo Maven
+target/
