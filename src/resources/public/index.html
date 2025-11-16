@@ -1,14 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cadastro de Filmes</title>
+    <script>
+        async function addMovie() {
+            const name = document.getElementById("name").value;
+            const genre = document.getElementById("genre").value;
+            const averageRating = parseFloat(document.getElementById("rating").value);
+            const year = parseInt(document.getElementById("year").value);
+
+            const movie = { name, genre, averageRating, year };
+            await fetch('/movies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(movie)
+            });
+
+            fetchMovies(); // Atualiza a lista de filmes após o cadastro
+        }
+
+        async function fetchMovies() {
+            const response = await fetch('/movies');
+            const movies = await response.json();
+            const movieList = document.getElementById("movieList");
+            movieList.innerHTML = ""; // Limpa a lista existente
+
+            movies.forEach(movie => {
+                const li = document.createElement("li");
+                li.textContent = `${movie.name} (${movie.year}) - ${movie.genre} - Avaliação: ${movie.averageRating}`;
+                movieList.appendChild(li);
+            });
+        }
+    </script>
 </head>
-
 <body>
-    <h1>Mubification</h1>
-</body>
+    <h1>Cadastrar Filme</h1>
+    <input type="text" id="name" placeholder="Nome do Filme" required />
+    <input type="text" id="genre" placeholder="Gênero" required />
+    <input type="number" id="rating" placeholder="Avaliação Média" step="0.1" required />
+    <input type="number" id="year" placeholder="Ano" required />
+    <button onclick="addMovie()">Adicionar Filme</button>
 
+    <h2>Lista de Filmes</h2>
+    <ul id="movieList"></ul>
+    <script>fetchMovies();</script> <!-- Carrega filmes existentes ao iniciar -->
+</body>
 </html>
