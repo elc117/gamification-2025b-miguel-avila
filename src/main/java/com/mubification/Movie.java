@@ -10,6 +10,9 @@ public class Movie {
     private int year;
     // private List<Review> reviews;
 
+    public Movie() {
+    }
+
     public Movie(String name, String genre, float averageRating, int year) {
         this.id = 0; // !!!!!! mudar
         this.name = name;
@@ -29,7 +32,7 @@ public class Movie {
 
     // genre
     public String getGenre() {
-        return this.name;
+        return this.genre;
     }
 
     private void setGenre(String genre) {
@@ -37,11 +40,11 @@ public class Movie {
     }
 
     // rating
-    public float getAvgRating() {
+    public float getAverageRating() {
         return this.averageRating;
     }
 
-    private void setAvgRating(float averageRating) {
+    private void setAverageRating(float averageRating) {
         this.averageRating = averageRating;
     }
 
