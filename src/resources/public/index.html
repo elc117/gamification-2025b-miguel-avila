@@ -30,7 +30,7 @@
 
             movies.forEach(movie => {
                 const li = document.createElement("li");
-                li.textContent = `${movie.name} (${movie.year}) - ${movie.genre} - Avaliação: ${movie.averageRating}`;
+                li.textContent = `Filme: ${movie.name} (${movie.year}) // Gênero: ${movie.genre} // Avaliação Média: ${movie.averageRating}`;
                 movieList.appendChild(li);
             });
         }
