@@ -6,6 +6,8 @@ import io.javalin.http.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mubification.models.Movie;
+
 
 public class Main {
     // cria a lista de filmes provisoria para testes

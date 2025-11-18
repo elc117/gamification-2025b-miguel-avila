@@ -1,4 +1,4 @@
-package com.mubification;
+package com.mubification.models;
 
 public class Movie {
     private int id;

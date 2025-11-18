@@ -1,4 +1,4 @@
-package com.mubification;
+package com.mubification.models;
 public class User {
     private int id;
     private String name;
