@@ -1,67 +1,118 @@
 package com.mubification.repositories;
 
 import com.mubification.models.Achievement;
+import com.mubification.util.Database;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AchievementRepository {
 
-    private final EntityManager em;
-
-    public AchievementRepository(EntityManager em) {
-        this.em = em;
-    }
-
     public List<Achievement> findAll() {
-        TypedQuery<Achievement> query = em.createQuery("SELECT a FROM Achievement a", Achievement.class);
-        return query.getResultList();
+        List<Achievement> list = new ArrayList<>();
+
+        String sql = "SELECT id, name, description, tier FROM achievements";
+
+        try (Connection conn = Database.getConnection();
+             Statement stmt  = conn.createStatement();
+             ResultSet rs    = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Achievement a = new Achievement(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getInt("tier")
+                );
+                list.add(a);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
     public Achievement findById(int id) {
-        return em.find(Achievement.class, id);
-    }
+        String sql = "SELECT id, name, description, tier FROM achievements WHERE id = ?";
 
-    public Achievement save(Achievement achievement) {
-        try {
-            em.getTransaction().begin();
-            em.persist(achievement);
-            em.getTransaction().commit();
-            return achievement;
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
-        }
-    }
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
 
-    public Achievement update(Achievement achievement) {
-        try {
-            em.getTransaction().begin();
-            Achievement updated = em.merge(achievement);
-            em.getTransaction().commit();
-            return updated;
+            if (rs.next()) {
+                return new Achievement(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getInt("tier")
+                );
+            }
 
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
+            e.printStackTrace();
         }
+
+        return null;
+    }
+
+    public Achievement save(Achievement a) {
+        String sql = "INSERT INTO achievements(name, description, tier) VALUES (?, ?, ?) RETURNING id";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, a.getName());
+            stmt.setString(2, a.getDescription());
+            stmt.setInt(3, a.getTier());
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                a.setId(rs.getInt("id"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return a;
+    }
+
+    public Achievement update(Achievement a) {
+        String sql = "UPDATE achievements SET name=?, description=?, tier=? WHERE id=?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, a.getName());
+            stmt.setString(2, a.getDescription());
+            stmt.setInt(3, a.getTier());
+            stmt.setInt(4, a.getId());
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return a;
     }
 
     public void delete(int id) {
-        try {
-            em.getTransaction().begin();
-            Achievement achievement = em.find(Achievement.class, id);
+        String sql = "DELETE FROM achievements WHERE id=?";
 
-            if (achievement != null) em.remove(achievement);
-            
-            em.getTransaction().commit();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
 
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
+            e.printStackTrace();
         }
     }
-
 }

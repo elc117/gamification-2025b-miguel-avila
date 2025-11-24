@@ -1,67 +1,122 @@
 package com.mubification.repositories;
 
 import com.mubification.models.Quest;
+import com.mubification.util.Database;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
- 
+
 public class QuestRepository {
 
-    private final EntityManager em;
-
-    public QuestRepository(EntityManager em) {
-        this.em = em;
-    }
-
     public List<Quest> findAll() {
-        TypedQuery<Quest> query = em.createQuery("SELECT a FROM Quest q", Quest.class);
-        return query.getResultList();
+        List<Quest> list = new ArrayList<>();
+
+        String sql = "SELECT id, name, description, days_to_complete, points FROM quests";
+
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Quest q = new Quest(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("days_to_complete"),
+                        rs.getInt("points")
+                );
+                list.add(q);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
     public Quest findById(int id) {
-        return em.find(Quest.class, id);
-    }
+        String sql = "SELECT id, name, description, days_to_complete, points FROM quests WHERE id = ?";
 
-    public Quest save(Quest quest) {
-        try {
-            em.getTransaction().begin();
-            em.persist(quest);
-            em.getTransaction().commit();
-            return quest;
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
-        }
-    }
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
 
-    public Quest update(Quest quest) {
-        try {
-            em.getTransaction().begin();
-            Quest updated = em.merge(quest);
-            em.getTransaction().commit();
-            return updated;
+            if (rs.next()) {
+                return new Quest(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("days_to_complete"),
+                        rs.getInt("points")
+                );
+            }
 
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
+            e.printStackTrace();
         }
+
+        return null;
+    }
+
+    public Quest save(Quest q) {
+        String sql = "INSERT INTO quests(name, description, days_to_complete, points) VALUES (?, ?, ?, ?) RETURNING id";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, q.getName());
+            stmt.setString(2, q.getDescription());
+            stmt.setString(3, q.getDaysToComplete());
+            stmt.setInt(4, q.getPoints());
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                q.setId(rs.getInt("id"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return q;
+    }
+
+    public Quest update(Quest q) {
+        String sql = "UPDATE quests SET name=?, description=?, days_to_complete=?, points=? WHERE id=?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, q.getName());
+            stmt.setString(2, q.getDescription());
+            stmt.setString(3, q.getDaysToComplete());
+            stmt.setInt(4, q.getPoints());
+            stmt.setInt(5, q.getId());
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return q;
     }
 
     public void delete(int id) {
-        try {
-            em.getTransaction().begin();
-            Quest quest = em.find(Quest.class, id);
+        String sql = "DELETE FROM quests WHERE id=?";
 
-            if (quest != null) em.remove(quest);
-            
-            em.getTransaction().commit();
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
 
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
+            e.printStackTrace();
         }
     }
-
 }
