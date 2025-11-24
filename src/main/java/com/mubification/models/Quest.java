@@ -3,16 +3,17 @@ package com.mubification.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "achievements")
-public class Achievement {
+@Table(name = "quests")
+public class Quest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int    id;
-
+    
     private String name;
     private String description;
-    private int    tier;
+    private String daysToComplete;
+    private int    points;
 
     public int getId() {
         return this.id;
@@ -38,24 +39,27 @@ public class Achievement {
         this.description = description;
     }
 
-    public int getTier() {
-        return this.tier;
+    public String getDaysToComplete() {
+        return this.daysToComplete;
     }
 
-    public void setTier(int tier) {
-        this.tier = tier;
+    public void setDaysToComplete(String daysToComplete) {
+        this.daysToComplete = daysToComplete;
     }
 
-    public Achievement(String name, String description) {
-        this.name        = name;
-        this.description = description;
-        this.tier        = 0;
+    public int getPoints() {
+        return this.points;
     }
 
-    // aumenta o nível de uma conquista
-    // retorna o nível do novo tier
-    private int upgradeTier() {
-        if (this.tier < 2) this.tier = this.tier+1;
-        return this.tier;
+    public void setPoints(int points) {
+        this.points = points;
     }
+
+    public Quest(String name, String description, String days, int points) {
+        this.name           = name;
+        this.description    = description;
+        this.daysToComplete = days;
+        this.points         = points;
+    }
+
 }

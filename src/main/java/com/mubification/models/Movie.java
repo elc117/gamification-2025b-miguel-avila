@@ -1,60 +1,85 @@
 package com.mubification.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "movies")
 public class Movie {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
-    // private Cast cast;
+    private String director;
+    private String mainActor;
     private String genre;
-    private float averageRating;
-    // private int numberOfRatings; // modificar no diagrama de classes para incluir o uso disso
-    private int year;
-    // private List<Review> reviews;
+    private float  rating;
+    private int    releaseYear;
 
-    public Movie() {
+    public int getId() {
+        return this.id;
     }
 
-    public Movie(String name, String genre, float averageRating, int year) {
-        this.id = 0; // !!!!!! mudar
-        this.name = name;
-        this.genre = genre;
-        this.averageRating = averageRating;
-        this.year = year;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    // name
     public String getName() {
         return this.name;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    // genre
+    public String getDirector() {
+        return this.director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public String getMainActor() {
+        return this.mainActor;
+    }
+
+    public void setMainActor(String mainActor) {
+        this.mainActor = mainActor;
+    }
+
     public String getGenre() {
         return this.genre;
     }
 
-    private void setGenre(String genre) {
+    public void setGenre(String genre) {
         this.genre = genre;
     }
 
-    // rating
-    public float getAverageRating() {
-        return this.averageRating;
+    public float getRating() {
+        return this.rating;
     }
 
-    private void setAverageRating(float averageRating) {
-        this.averageRating = averageRating;
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 
-    // rating
-    public int getYear() {
-        return this.year;
+    public int getReleaseYear() {
+        return this.releaseYear;
     }
 
-    private void setYear(int year) {
-        this.year = year;
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public Movie(String name, String genre, String director, String actor, float rating, int year) {
+        this.name        = name;
+        this.genre       = genre;
+        this.director    = director;
+        this.mainActor   = actor;
+        this.rating      = rating;
+        this.releaseYear = year;
     }
 
 }
