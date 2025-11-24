@@ -1,34 +1,49 @@
 package com.mubification;
 
-import io.javalin.Javalin;
-import io.javalin.http.Handler;
+import com.mubification.models.Movie;
+import com.mubification.repositories.MovieRepository;
+import com.mubification.util.Database;
 
-import java.util.ArrayList;
+import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
+
 import java.util.List;
 
-import com.mubification.models.Movie;
-
-
 public class Main {
-    // cria a lista de filmes provisoria para testes
-    private static List<Movie> movies = new ArrayList<>(); 
 
     public static void main(String[] args) {
+
+        String dbUrl = System.getenv("DATABASE_URL");
+
+        if (dbUrl == null) {
+            System.err.println("ERRO: A variável DATABASE_URL não está definida!");
+            System.exit(1);
+        }
+
+        Database.connect(dbUrl);
+
+        MovieRepository movieRepository = new MovieRepository();
+
         Javalin app = Javalin.create(config -> {
-            config.staticFiles.add("/public");
+            config.staticFiles.add(staticFiles -> {
+                staticFiles.directory = "/public";
+                staticFiles.location = Location.CLASSPATH;
+            });
         }).start(7070);
 
-    app.get("/", ctx -> ctx.redirect("index.html"));
+        app.get("/", ctx -> ctx.redirect("index.html"));
 
-    app.get("/movies", ctx -> {
-        ctx.json(movies);
-    });
+        // GET /movies
+        app.get("/movies", ctx -> {
+            List<Movie> movies = movieRepository.findAll();
+            ctx.json(movies);
+        });
 
-    app.post("/movies", ctx -> {
-        Movie movie = ctx.bodyAsClass(Movie.class);
-        movies.add(movie);
-        ctx.status(201); // status 201 = created
-    });
-
+        // POST /movies
+        app.post("/movies", ctx -> {
+            Movie movie = ctx.bodyAsClass(Movie.class);
+            movieRepository.save(movie);
+            ctx.status(201);
+        });
     }
 }
