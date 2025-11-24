@@ -73,6 +73,8 @@ public class Movie {
         this.releaseYear = releaseYear;
     }
 
+    public Movie() {}
+
     public Movie(String name, String genre, String director, String actor, float rating, int year) {
         this.name        = name;
         this.genre       = genre;

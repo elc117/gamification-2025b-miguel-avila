@@ -64,6 +64,8 @@ public class User {
         this.points = points;
     }
 
+    public User() {}
+
     // método que serve para incrementar a quantidade de pontos
     // que um usuário possui
     public int incrementPoints(int incrementedPoints) {

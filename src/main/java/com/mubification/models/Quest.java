@@ -55,6 +55,10 @@ public class Quest {
         this.points = points;
     }
 
+
+    public Quest() {}
+
+
     public Quest(String name, String description, String days, int points) {
         this.name           = name;
         this.description    = description;

@@ -52,10 +52,18 @@ public class Achievement {
         this.tier        = 0;
     }
 
+    public Achievement() {}
+
     // aumenta o nível de uma conquista
     // retorna o nível do novo tier
     private int upgradeTier() {
-        if (this.tier < 2) this.tier = this.tier+1;
+
+        if(this.tier < 3) {
+            this.tier = this.tier+1;
+            System.out.println("conquista subiu de nível!");
+        } 
+        if(this.tier == 3) System.out.println("conquista no nivel máximo!");
+        
         return this.tier;
     }
 }
