@@ -10,9 +10,9 @@ public class Review {
     public Review() {}
 
     public Review(int userId, int movieId, double rating, String comment) {
-        this.userId = userId;
+        this.userId  = userId;
         this.movieId = movieId;
-        this.rating = rating;
+        this.rating  = rating;
         this.comment = comment;
     }
 
