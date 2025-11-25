@@ -133,6 +133,7 @@ html,body{
   background:linear-gradient(180deg,var(--card), rgba(255,255,255,0.01));
   border-radius:var(--radius);
   padding:18px;
+  margin-bottom: 20px;
 }
 
 .toolbar{
@@ -204,7 +205,7 @@ html,body{
 }
 .fields textarea{
   min-height:90px;
-  resize:vertical;
+  resize:none;
 }
 
 /* Rating stars */
@@ -282,7 +283,9 @@ html,body{
 
 /* Right column */
 .right .panel.small{
-  height:220px;
+  min-height:220px;
+  max-height:600px;
+  margin-bottom: 20px;
 }
 
 .leaderboard ol{
@@ -397,4 +400,63 @@ footer{
   .sidebar{
     height:auto;
   }
+}
+
+.profile-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Header */
+.profile-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: linear-gradient(180deg, #111217, #0b0c10);
+}
+
+.profile-info .profile-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.profile-info .profile-handle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Stats */
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  background: rgba(255,255,255,0.02);
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-label {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
 }
