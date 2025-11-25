@@ -50,9 +50,7 @@ public class Database {
 }
 
     public static Connection getConnection() throws SQLException {
-        if (dataSource == null) {
-            throw new IllegalStateException("Banco não conectado!");
-        }
+        if (dataSource == null) { throw new IllegalStateException("Banco não conectado!"); }
         return dataSource.getConnection();
     }
 
