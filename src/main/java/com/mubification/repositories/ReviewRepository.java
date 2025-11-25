@@ -12,9 +12,9 @@ public class ReviewRepository {
 
     private final DataSource ds = Database.getDataSource();
 
+    // buscar todas as reviews
     public List<Review> findAll() {
         List<Review> reviews = new ArrayList<>();
-
         String sql = "SELECT id, userid, movieid, rating, comment FROM reviews";
 
         try (Connection conn = ds.getConnection();
@@ -30,13 +30,12 @@ public class ReviewRepository {
                 r.setComment(rs.getString("comment"));
                 reviews.add(r);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
 
         return reviews;
     }
 
+    // buscar uma review por id
     public Review findById(long id) {
         String sql = "SELECT id, userid, movieid, rating, comment FROM reviews WHERE id = ?";
 
@@ -57,47 +56,25 @@ public class ReviewRepository {
             }
             return null;
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
     }
 
-    public Review save(Review r) {
-        String sql = """
-            INSERT INTO reviews (userid, movieid, rating, comment)
-            VALUES (?, ?, ?, ?)
-        """;
-
-        try (Connection conn = ds.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setInt(1, r.getUserId());
-            stmt.setInt(2, r.getMovieId());
-            stmt.setDouble(3, r.getRating());
-            stmt.setString(4, r.getComment());
-            stmt.executeUpdate();
-
-            ResultSet keys = stmt.getGeneratedKeys();
-            if (keys.next()) r.setId(keys.getLong(1));
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return r;
-    }
-
-    public void delete(long id) {
-        String sql = "DELETE FROM reviews WHERE id = ?";
-
-        try (Connection conn = ds.getConnection();
+    public Review addReview(Review review) {
+        String sql = "INSERT INTO reviews (userid, movieid, rating, comment) VALUES (?, ?, ?, ?)";
+        try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setLong(1, id);
+            stmt.setInt(1, review.getUserId());
+            stmt.setInt(2, review.getMovieId());
+            stmt.setDouble(3, review.getRating());
+            stmt.setString(4, review.getComment());
+
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao salvar a review no banco", e);
         }
+        return review;
     }
 }
