@@ -3,3 +3,5 @@
 
 # artefatos gerados pelo Maven
 target/
+
+.env/
