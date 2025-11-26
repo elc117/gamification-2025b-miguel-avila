@@ -15,12 +15,15 @@ public class ReviewService {
     }
 
     public Review addReview(Review review) {
-        return reviewRepository.addReview(review);
+        return reviewRepository.addReview(review); 
     }
 
     public List<ReviewDTO> getTopReviews(int limit) {
         return reviewRepository.getTopReviews(limit);
     }
 
+    public List<ReviewDTO> getUserTopReviews(int limit, int user) {
+        return reviewRepository.getUserTopReviews(limit, user);
+    }
 
 }
