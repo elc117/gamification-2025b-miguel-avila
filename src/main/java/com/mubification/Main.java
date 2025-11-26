@@ -2,9 +2,13 @@ package com.mubification;
 
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
+
 // Controllers
-import com.mubification.controllers.MovieController;
+import com.mubification.controllers.AchievementController;
 import com.mubification.controllers.ReviewController;
+import com.mubification.controllers.StoreController;
+import com.mubification.controllers.MovieController;
+import com.mubification.controllers.UserController;
 // Repositories
 // Utils
 import com.mubification.util.Database;
@@ -20,8 +24,11 @@ public class Main {
         }
         Database.connect(dbUrl);
 
-        ReviewController reviewController = new ReviewController();
-        MovieController movieController   = new MovieController();
+        AchievementController achievementController = new AchievementController();
+        ReviewController      reviewController      = new ReviewController();
+        MovieController       movieController       = new MovieController();
+        UserController        userController        = new UserController();
+        StoreController       storeController       = new StoreController();
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add(staticFiles -> {
@@ -29,10 +36,13 @@ public class Main {
                 staticFiles.location = Location.CLASSPATH;
             });
         });
-        app.get("/", ctx -> ctx.redirect("/app.html"));
+        app.get("/", ctx -> ctx.redirect("/auth.html"));
 
         reviewController.registerRoutes(app);  
         movieController.registerRoutes(app);
+        achievementController.registerRoutes(app);
+        userController.registerRoutes(app);
+        storeController.registerRoutes(app);
 
         app.start(7070);
     }
