@@ -23,14 +23,20 @@ public class StoreController {
     }
 
     // compra um item
+    public static class ResponseMessage {
+        public String status;
+        public ResponseMessage(String status) { this.status = status; }
+    }
+    
     public void buyItem(Context ctx) {
         int userId = Integer.parseInt(ctx.queryParam("userid"));
         int itemId = Integer.parseInt(ctx.queryParam("itemid"));
-
         String result = storeService.buyItem(userId, itemId);
-
-        ctx.json(result);
+        ctx.json(new ResponseMessage(result));
     }
+
+
+
 
     public void registerRoutes(Javalin app) {
         app.get("/api/store/items", this::getItems);

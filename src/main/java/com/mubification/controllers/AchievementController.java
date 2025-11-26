@@ -1,9 +1,11 @@
 package com.mubification.controllers;
 
-import com.mubification.models.Achievement;
+import com.mubification.models.AchievementDTO;
 import com.mubification.services.AchievementService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.List;
+
 
 public class AchievementController {
     
@@ -13,14 +15,14 @@ public class AchievementController {
         this.achievementService = new AchievementService();
     }
 
-    public void addAchievement(Context ctx) {
-        Achievement newAchievement   = ctx.bodyAsClass(Achievement.class);
-        Achievement addedAchievement = achievementService.addAchievement(newAchievement);
-        ctx.status(201).json(addedAchievement);
+    public void getUserAchievements(Context ctx) {
+        int userId = Integer.parseInt(ctx.pathParam("id"));
+        List<AchievementDTO> userAchievements = achievementService.getUserAchievements(userId);
+        ctx.json(userAchievements);
     }
 
-    // registrar os endpoints
     public void registerRoutes(Javalin app) {
-        app.post("/api/achievements", this::addAchievement);
+        app.get("/api/achievements/user/{id}", this::getUserAchievements);
     }
+
 }
