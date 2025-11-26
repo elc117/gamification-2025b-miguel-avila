@@ -460,3 +460,10 @@ footer{
   color: var(--muted);
   font-size: 13px;
 }
+
+.shop-item .shop-price {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--accent);
+}

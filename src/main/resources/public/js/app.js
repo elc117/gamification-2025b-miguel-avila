@@ -15,6 +15,7 @@ function loadPage(id) {
 
 document.getElementById("nav-home").onclick =   () => loadPage("page-home");
 document.getElementById("nav-perfil").onclick = () => loadPage("page-perfil");
+document.getElementById("nav-loja").onclick = () => loadPage("page-loja");
 
 loadPage("page-home");
 
