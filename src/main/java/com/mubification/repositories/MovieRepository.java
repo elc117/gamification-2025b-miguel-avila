@@ -32,7 +32,7 @@ public class MovieRepository {
             }
         } catch (SQLException e) { e.printStackTrace(); }
 
-        for (Movie m : movies) { System.out.println( "ID: " + m.getId() + " | Nome: " + m.getName() ); }
+        // for (Movie m : movies) { System.out.println( "ID: " + m.getId() + " | Nome: " + m.getName() ); }
         return movies;
     }
 
