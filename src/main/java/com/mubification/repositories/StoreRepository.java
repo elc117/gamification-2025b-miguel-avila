@@ -53,7 +53,7 @@ public class StoreRepository {
                     s.setDescription(rs.getString("description"));
                     s.setPrice(rs.getInt("price"));
                     s.setImage(rs.getString("image"));
-                    s.setCreated(rs.getString("created"));
+                    s.setCreated(rs.getString("created_at"));
                     return s;
                 }
             }

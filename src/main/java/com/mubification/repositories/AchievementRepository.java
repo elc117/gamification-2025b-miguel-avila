@@ -4,25 +4,80 @@ import com.mubification.models.Achievement;
 import com.mubification.util.Database;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AchievementRepository {
 
-    public Achievement addAchievement(Achievement achievement) {
-        String sql = "INSERT INTO achievements (name, description, criteria, points) VALUES (?,?,?,?)";
-        
+    public List<Achievement> getAll() {
+
+        String sql = "SELECT id, name, description, criteria, points FROM achievements";
+        List<Achievement> list = new ArrayList<>();
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Achievement a = new Achievement(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("criteria"),
+                        rs.getInt("points")
+                );
+                list.add(a);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar achievements", e);
+        }
+
+        return list;
+    }
+
+    public List<Integer> getCompletedAchievements(int userId) {
+
+        String sql = "SELECT achievement_id FROM user_achievements WHERE user_id = ?";
+        List<Integer> completed = new ArrayList<>();
+
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, achievement.getName());
-            stmt.setString(2, achievement.getDescription());
-            stmt.setString(3, achievement.getCriteria());
-            stmt.setInt   (4, achievement.getPoints());
-            
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) { achievement.setId(rs.getInt("id")); }
-        } catch (SQLException e) { e.printStackTrace(); }
+            stmt.setInt(1, userId);
 
-        return achievement;
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    completed.add(rs.getInt("achievement_id"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar conquistas completadas", e);
+        }
+
+        return completed;
     }
 
+    public void markCompleted(int userId, int achievementId) {
+
+        String sql = """
+            INSERT INTO user_achievements (user_id, achievement_id, unlocked_at)
+            VALUES (?, ?, NOW())
+        """;
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setInt(2, achievementId);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao marcar achievement como completo", e);
+        }
+    }
 }

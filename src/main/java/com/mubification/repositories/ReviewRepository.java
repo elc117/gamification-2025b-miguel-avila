@@ -14,6 +14,7 @@ import java.util.List;
 public class ReviewRepository {
 
     public Review addReview(Review review) {
+        
         String sql = "INSERT INTO reviews (userid, movieid, rating, comment) VALUES (?, ?, ?, ?)";
         try (Connection conn = Database.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -29,6 +30,7 @@ public class ReviewRepository {
             e.printStackTrace();
             throw new RuntimeException("Erro ao salvar a review no banco", e);
         } 
+
         return review;
     }
 
