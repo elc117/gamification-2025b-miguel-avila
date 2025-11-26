@@ -14,7 +14,7 @@ public class MovieController {
     public MovieController() {
         this.movieService = new MovieService();
     }
-
+ 
     // buscar filmes por título
     public void searchMovies(Context ctx) {
         String title = ctx.queryParam("title");
