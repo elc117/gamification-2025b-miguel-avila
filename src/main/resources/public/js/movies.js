@@ -42,7 +42,9 @@ async function searchMovies() {
 function selectMovie(movie) {
   const titleInput = document.getElementById("movie-title");
   if (titleInput) titleInput.value = movie.name;
+  window.selectedMovieId = movie.id;
   document.getElementById("movie-suggestions").style.display = "none";
+
 }
 
 // envia um novo filme
@@ -58,7 +60,14 @@ async function submitNewMovie() {
     return;
   }
 
-  const newMovie = { title, director, mainActor, genre, year };
+  const newMovie = {
+    name: title,
+    director,
+    mainActor,
+    genre,
+    rating: 0,
+    releaseYear: parseInt(year)
+  };
 
   try {
     const resp = await fetch("/api/movies", {
@@ -69,11 +78,17 @@ async function submitNewMovie() {
 
     if (!resp.ok) return alert("Erro ao adicionar filme!");
 
+    const added = await resp.json();
+
+    window.selectedMovieId = added.id;
+    document.getElementById("movie-title").value = added.name;
+
     alert("Filme adicionado!");
 
     document.getElementById("new-movie-form").style.display = "none";
     document.getElementById("movie-suggestions").style.display = "none";
 
-  } catch (e) { console.error("Erro ao enviar filme:", e); }
+  } catch (e) { console.error("Erro:", e); }
 }
+
 
