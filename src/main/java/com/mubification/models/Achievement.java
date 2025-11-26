@@ -5,21 +5,24 @@ public class Achievement {
     private int id;
     private String name;
     private String description;
-    private int tier;
+    private String criteria; // json
+    private int points;
 
     public Achievement() {}
 
-    public Achievement(String name, String description) {
+    public Achievement(String name, String description, String criteria, int points) {
         this.name = name;
         this.description = description;
-        this.tier = 0;
+        this.criteria = criteria;
+        this.points = points;
     }
 
-    public Achievement(int id, String name, String description, int tier) {
+    public Achievement(int id, String name, String description, String criteria, int points) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.tier = tier;
+        this.criteria = criteria;
+        this.points = points;
     }
 
     // GETTERS E SETTERS
@@ -32,6 +35,9 @@ public class Achievement {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public int getTier() { return tier; }
-    public void setTier(int tier) { this.tier = tier; }
+    public String getCriteria() { return criteria; }
+    public void setCriteria(String criteria) { this.criteria = criteria; }
+
+    public int getPoints() { return points; }
+    public void setPoints(int points) { this.points = points; }
 }
