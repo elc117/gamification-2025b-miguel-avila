@@ -1,74 +1,93 @@
-/* Ajustar altura automática */
-function adjustHeight() {
-  const forms = document.querySelector(".forms");
-  const activeForm = document.querySelector(".form.active");
-  forms.style.height = activeForm.offsetHeight + "px";
-}
-
-/* Trocar para a tela de cadastro */
+/* Alterna entre formulários */
 function goToRegister() {
-  document.getElementById("login-form").classList.remove("active");
-  document.getElementById("signup-form").classList.add("active");
-  adjustHeight();
+  document.getElementById('login-form').classList.remove('active');
+  document.getElementById('signup-form').classList.add('active');
 }
 
-/* Trocar para a tela de login */
 function goToLogin() {
-  document.getElementById("signup-form").classList.remove("active");
-  document.getElementById("login-form").classList.add("active");
-  adjustHeight();
+  document.getElementById('signup-form').classList.remove('active');
+  document.getElementById('login-form').classList.add('active');
 }
 
-/* Mostrar / esconder senha */
-function togglePass(id) {
-  const input = document.getElementById(id);
-  input.type = input.type === "password" ? "text" : "password";
-}
-
-/* Chama ao carregar a página */
-window.onload = adjustHeight;
-
-/* LOGIN */
+/* Função para login */
 async function doLogin() {
-  const email = document.querySelector("#login-form input[name=email]").value;
-  const password = document.querySelector("#login-form input[name=password]").value;
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value.trim();
 
-  const res = await fetch("/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+  if (!email || !password) return alert("Preencha todos os campos!");
 
-  if (res.ok) {
-    window.location.href = "app.html";
-  } else {
-    alert(await res.text());
+  try {
+    const resp = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!resp.ok) return alert("Email ou senha inválidos!");
+
+    const user = await resp.json();
+
+    localStorage.setItem("userid", user.id);
+    localStorage.setItem("username", user.username);
+    localStorage.setItem("name", user.name);
+
+
+    alert("Login realizado com sucesso!");
+    // aqui você pode redirecionar ou mostrar painel de usuário
+    console.log("Usuário logado:", user);
+
+  } catch (e) {
+    console.error(e);
+    alert("Erro de comunicação com o servidor.");
   }
+  window.location.href = "/app.html";
 }
 
-/* REGISTER */
+/* Função para registro */
 async function doRegister() {
-  const name = document.querySelector("#signup-form input[name=name]").value;
-  const user = document.querySelector("#signup-form input[name=user]").value;
-  const email = document.querySelector("#signup-form input[name=email]").value;
+  const name = document.getElementById('reg-name').value.trim();
+  const username = document.getElementById('reg-username').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-pass').value.trim();
+  const password2 = document.getElementById('reg-pass2').value.trim();
 
-  const pass = document.getElementById("reg-pass").value;
-  const pass2 = document.getElementById("reg-pass2").value;
+  if (!name || !username || !email || !password || !password2) return alert("Preencha todos os campos!");
 
-  if (pass !== pass2) {
-    return alert("As senhas não coincidem!");
-  }
+  if (password !== password2) return alert("As senhas não coincidem!");
 
-  const res = await fetch("/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, user, email, password: pass })
-  });
+  const userObj = { name, username, email, password };
 
-  if (res.ok) {
-    alert("Conta criada! Faça login.");
-    goToLogin();
-  } else {
-    alert(await res.text());
+  try {
+    // verifica se usuário/email já existe
+    const verifyResp = await fetch('/api/users/exist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userObj)
+    });
+
+    const exists = await verifyResp.json();
+    if (exists) return alert("Usuário ou email já cadastrados!");
+
+    // cria usuário
+    const createResp = await fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userObj)
+    });
+
+    if (!createResp.ok) return alert("Erro ao criar usuário!");
+
+    const newUser = await createResp.json();
+    localStorage.setItem("userid", newUser.id);
+    localStorage.setItem("username", newUser.username);
+    localStorage.setItem("name", newUser.name);
+
+
+    alert("Conta criada com sucesso!");
+    goToLogin(); // volta para login ou já loga automaticamente
+
+  } catch (e) {
+    console.error(e);
+    alert("Erro de comunicação com o servidor.");
   }
 }

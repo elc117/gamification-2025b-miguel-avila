@@ -167,7 +167,6 @@
                             <input type="radio" id="r2" name="rating" value="2"><label for="r2"></label>
                             <input type="radio" id="r1" name="rating" value="1"><label for="r1"></label>
                         </div>
-                        <!-- <div class="rating-label">Sua nota</div>  -->
                     </div>
 
                 </div>
@@ -189,189 +188,91 @@
 
     
 
-  <template id="page-perfil">
-  <div class="panel profile-panel">
-    
-    <!-- Foto + Nome -->
-    <div class="profile-header">
-      <div class="profile-avatar">
-        <img src="https://via.placeholder.com/120x120" alt="Foto do usuário">
-      </div>
-      <div class="profile-info">
-        <h2 class="profile-name">Miguel Avila</h2>
-        <p class="profile-handle">@miguel</p>
-      </div>
+<!-- TEMPLATE DO CABEÇALHO DO USUÁRIO (USADO EM TODAS AS PÁGINAS) -->
+<template id="user-header">
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img id="user-avatar" src="https://via.placeholder.com/120x120" alt="Foto do usuário">
+    </div>
+    <div class="profile-info">
+      <h2 class="profile-name" id="user-name">Usuário</h2>
+      <p class="profile-handle" id="user-handle">@user</p>
+    </div>
+  </div>
+
+  <div class="profile-stats">
+    <div class="stat">
+      <span class="stat-value" id="user-followers">0</span>
+      <span class="stat-label">Seguidores</span>
     </div>
 
-    <!-- Stats -->
-    <div class="profile-stats">
-      <div class="stat">
-        <span class="stat-value">120</span>
-        <span class="stat-label">Seguidores</span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-value">180</span>
-        <span class="stat-label">Seguindo</span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-value">🔥</span>
-        <span class="stat-label">Streak</span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-value">650🪙</span>
-        <span class="stat-label">Moedas</span>
-      </div>
+    <div class="stat">
+      <span class="stat-value" id="user-following">0</span>
+      <span class="stat-label">Seguindo</span>
     </div>
 
-    <div class="panel">
-          <h3>Últimas Reviews</h3>
-          <div class="feed">
-            <article class="card">
-              <div class="card-header">
-                <div class="card-thumb">Img</div>
-                <div>
-                  <div class="title">Duna: Ressurgência</div>
-                  <div class="sub">por @miguel • 2h atrás • ⭐⭐⭐⭐☆</div>
-                  <p class="card-text">Review curta: ótimas paisagens, ritmo perfeito — vale assistir no cinema.</p>
-                </div>
-              </div>
-            </article>
+    <div class="stat">
+      <span class="stat-value" id="user-streak">🔥</span>
+      <span class="stat-label">Streak</span>
+    </div>
 
-            <article class="card">
-              <div class="title">Blade Runner 2049</div>
-              <div class="sub">por @ana • ontem • ⭐⭐⭐⭐⭐</div>
-              <p class="card-text">Visual impecável. Trilha sonora hipnótica.</p>
-            </article>
-
-            <article class="card">
-              <div class="title">O Grande Truque</div>
-              <div class="sub">por @leo • 3 dias atrás • ⭐⭐⭐⭐☆</div>
-              <p class="card-text">Final surpreendente. Recomendo duas vezes.</p>
-            </article>
-          </div>
-        </div>
-
+    <div class="stat">
+      <span class="stat-value" id="user-coins">0🪙</span>
+      <span class="stat-label">Moedas</span>
+    </div>
   </div>
 </template>
 
+
+<!-- ============================
+      PÁGINA DE PERFIL
+=============================== -->
+<template id="page-perfil">
+<div class="panel profile-panel">
+
+  <!-- Cabeçalho compartilhado -->
+  <div class="dynamic-user-header"></div>
+
+  <div class="panel">
+    <h3>Últimas Reviews</h3>
+    <div class="feed" id="user-reviews-feed">
+
+      <!-- Aqui o JS insere as reviews reais do usuário -->
+
+    </div>
+  </div>
+
+</div>
+</template>
+
+
+
+<!-- ============================
+      PÁGINA DA LOJA
+=============================== -->
 <template id="page-loja">
-  <div class="panel profile-panel">
-    
-    <!-- Header do usuário -->
-    <div class="profile-header">
-      <div class="profile-avatar">
-        <img src="https://via.placeholder.com/120x120" alt="Foto do usuário">
-      </div>
-      <div class="profile-info">
-        <h2 class="profile-name">Miguel Avila</h2>
-        <p class="profile-handle">@miguel</p>
-      </div>
+<div class="panel profile-panel">
+
+  <!-- Cabeçalho compartilhado -->
+  <div class="dynamic-user-header"></div>
+
+  <div class="panel" id="loja-css">
+    <h3>Loja de Itens</h3>
+
+    <div class="feed" id="loja-itens-feed">
+
+      <!-- Aqui o JS insere os itens vindos do DB -->
+
     </div>
-
-    <!-- Stats -->
-    <div class="profile-stats">
-      <div class="stat">
-        <span class="stat-value">120</span>
-        <span class="stat-label">Seguidores</span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-value">180</span>
-        <span class="stat-label">Seguindo</span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-value">🔥</span>
-        <span class="stat-label">Streak</span>
-      </div>
-
-      <div class="stat">
-        <span class="stat-value">650🪙</span>
-        <span class="stat-label">Moedas</span>
-      </div>
-    </div>
-
-    <!-- Loja -->
-    <div class="panel">
-      <h3>Loja de Itens</h3>
-
-      <div class="feed">
-
-        <!-- ITEM 1 -->
-        <article class="card shop-item">
-          <div class="card-header">
-            <div class="card-thumb">🎨</div>
-            <div>
-              <div class="title">Tema Roxo Neon</div>
-              <div class="sub">Personalize seu perfil</div>
-              <p class="card-text">Dá ao seu perfil um visual premium com tons neon.</p>
-              <div class="shop-price">300🪙</div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ITEM 2 -->
-        <article class="card shop-item">
-          <div class="card-header">
-            <div class="card-thumb">🖼️</div>
-            <div>
-              <div class="title">Avatar Animado</div>
-              <div class="sub">Efeito exclusivo</div>
-              <p class="card-text">Transforme seu avatar em uma animação sutil.</p>
-              <div class="shop-price">450🪙</div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ITEM 3 -->
-        <article class="card shop-item">
-          <div class="card-header">
-            <div class="card-thumb">✨</div>
-            <div>
-              <div class="title">Moldura Lendária</div>
-              <div class="sub">Item raro</div>
-              <p class="card-text">Adicione uma moldura dourada brilhante ao seu avatar.</p>
-              <div class="shop-price">1200🪙</div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ITEM 4 -->
-        <article class="card shop-item">
-          <div class="card-header">
-            <div class="card-thumb">🎵</div>
-            <div>
-              <div class="title">Som de Notificação</div>
-              <div class="sub">Pacote especial</div>
-              <p class="card-text">Troque o som padrão por opções premium.</p>
-              <div class="shop-price">200🪙</div>
-            </div>
-          </div>
-        </article>
-
-        <!-- ITEM 5 -->
-        <article class="card shop-item">
-          <div class="card-header">
-            <div class="card-thumb">🔥</div>
-            <div>
-              <div class="title">Badge de Fogo</div>
-              <div class="sub">Mostre sua dedicação</div>
-              <p class="card-text">Um badge especial para perfis com streak alto.</p>
-              <div class="shop-price">350🪙</div>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </div>
-
   </div>
+
+</div>
 </template>
 
-  <script src="/js/reviews.js"></script>
+  <script src="/js/auth.js"></script>
   <script src="/js/app.js"></script>
+  <script src="/js/movies.js"></script>
+  <script src="/js/forms.js"></script>
+  <script src="/js/reviews.js"></script>
 </body>
 </html>

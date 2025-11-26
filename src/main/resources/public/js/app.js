@@ -1,139 +1,181 @@
-const mainPanels = document.querySelector(".main-panels");
+// ===============================
+// CARREGA DADOS DO USUÁRIO (da API real)
+// ===============================
+async function loadUserInfoIntoHeader() {
+    const userId = localStorage.getItem("userid");
+    if (!userId) return console.error("Usuário não logado");
 
-function loadPage(id) {
-  const template = document.getElementById(id);
-  mainPanels.innerHTML = "";
-  mainPanels.appendChild(template.content.cloneNode(true));
+    try {
+        const response = await fetch(`/api/user/info?userid=` + userId);
+        const user = await response.json();
 
-  document.querySelectorAll(".nav a").forEach(a => a.classList.remove("active"));
-  document.getElementById("nav-" + id.replace("page-", "")).classList.add("active");
+        document.getElementById("user-name").textContent = user.name;
+        document.getElementById("user-handle").textContent = "@" + user.username;
+        // document.getElementById("user-followers").textContent = user.followers;
+        // document.getElementById("user-following").textContent = user.following;
+        // document.getElementById("user-streak").textContent = "🔥" + user.streak;
+        document.getElementById("user-coins").textContent = user.points + "🪙";
+        //  document.getElementById("user-avatar").src = user.avatar;
 
-  // roda scripts específicos da página
-  if (id === "page-home") initHomeJS();
-  if (id === "page-perfil") initPerfilJS();
+    } catch (err) { console.error("Erro ao carregar infos do usuário:", err); }
 }
 
-document.getElementById("nav-home").onclick =   () => loadPage("page-home");
-document.getElementById("nav-perfil").onclick = () => loadPage("page-perfil");
-document.getElementById("nav-loja").onclick = () => loadPage("page-loja");
-
-loadPage("page-home");
-
-
-// ------------------------------------------------------
-//        INICIALIZA A HOME (só quando ela existe!)
-// ------------------------------------------------------
+// ===============================
+// INICIALIZA HOME
+// ===============================
 function initHomeJS() {
+
+  // Botão para abrir/fechar o painel de nova review
   const btn = document.getElementById("new-review-btn");
   const panel = document.getElementById("new-review");
 
-  if (btn) {
-     btn.onclick = () => {
-        panel.style.display = panel.style.display === "block" ? "none" : "block";
-     };
+  if (btn && panel) {
+    btn.onclick = () => {
+      panel.style.display = panel.style.display === "block" ? "none" : "block";
+    };
   }
 
-  // ativa busca dinâmica
+  // Busca dinâmica de filmes
   const titleInput = document.getElementById("movie-title");
-  if (titleInput) titleInput.addEventListener("input", searchMovies);
+  if (titleInput) {
+    titleInput.addEventListener("input", searchMovies);
+  }
 }
 
-// Perfil (se quiser adicionar coisas)
-function initPerfilJS() {}
 
+// ===============================
+// CARREGA REVIEWS DO USUÁRIO
+// ===============================
+async function loadUserTopReviews() {
+    const userId = localStorage.getItem("userid");
+    if (!userId) return;
 
-// ------------------------------------------------------
-//   BUSCA DINÂMICA — agora sem quebrar sua aplicação
-// ------------------------------------------------------
-async function searchMovies() {
-  const titleInput = document.getElementById("movie-title");
-  if (!titleInput) return; // evita erro quando não está na home
+    try {
+        const response = await fetch(`/api/user-reviews?userid=` + userId);
+        const reviews = await response.json();
 
-  const query = titleInput.value.trim();
-  const suggestionsBox = document.getElementById("movie-suggestions");
-  const movieList = document.getElementById("movie-list");
-  const addBtn = document.getElementById("add-new-movie");
+        const container = document.getElementById("user-reviews-feed");
+        container.innerHTML = "";
 
-  if (!suggestionsBox || !movieList || !addBtn) return; // segurança extra
+        reviews.forEach(r => {
+            const card = document.createElement("article");
+            card.classList.add("card");
 
-  if (query === "") {
-    suggestionsBox.style.display = "none";
-    return;
-  }
+            card.innerHTML = `
+                <div class="card-header">
+                  <div class="card-thumb">Img</div>
+                  <div>
+                    <div class="title">${r.movie}</div>
+                    <div class="sub">por @${r.user} • ⭐${r.rating}</div>
+                    <p class="card-text">${r.comment}</p>
+                  </div>
+                </div>
+            `;
 
-  try {
-    const resp = await fetch(`/api/movies/search?title=${encodeURIComponent(query)}`);
-    const movies = await resp.json();
+            container.appendChild(card);
+        });
 
-    movieList.innerHTML = "";
-
-    if (movies.length > 0) {
-      addBtn.style.display = "none";
-      movies.forEach(movie => {
-        const li = document.createElement("li");
-        li.textContent = movie.name;
-        li.onclick = () => selectMovie(movie);
-        movieList.appendChild(li);
-      });
-    } else {
-      movieList.innerHTML = "<li>Nenhum filme encontrado</li>";
-      addBtn.style.display = "block";
+    } catch (err) {
+        console.error("Erro ao carregar reviews:", err);
     }
-
-    suggestionsBox.style.display = "block";
-  } catch (e) {
-    console.error("Erro:", e);
-  }
-}
-
-function selectMovie(movie) {
-  const titleInput = document.getElementById("movie-title");
-  if (titleInput) titleInput.value = movie.name;
-  document.getElementById("movie-suggestions").style.display = "none";
 }
 
 
-// ------------------------------------------------------
-//    FORM DE NOVO FILME
-// ------------------------------------------------------
-function showAddMovieForm() {
-  document.getElementById("new-movie-form").style.display = "block";
-  document.getElementById("add-new-movie").style.display = "none";
+
+// ===============================
+// CARREGA ITENS DA LOJA
+// ===============================
+async function loadItensDaLoja() {
+    try {
+        const response = await fetch("/api/store/items");
+        const itens = await response.json();
+
+        const container = document.getElementById("loja-itens-feed");
+        container.innerHTML = "";
+
+        itens.forEach(item => {
+            const card = document.createElement("article");
+            card.classList.add("card", "shop-item");
+
+            card.innerHTML = `
+                <div class="card-header">
+                  <div class="card-thumb">${item.emoji}</div>
+                  <div>
+                    <div class="title">${item.name}</div>
+                    <p class="card-text">${item.description}</p>
+                    <div class="shop-price">${item.price}🪙</div>
+                  </div>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+
+    } catch (err) {
+        console.error("Erro ao carregar itens da loja:", err);
+    }
 }
 
-function cancelAddMovie() {
-  document.getElementById("new-movie-form").style.display = "none";
+
+
+// ===============================
+// INJECT HEADER COMPARTILHADO
+// ===============================
+function injectUserHeader() {
+    const container = document.querySelector(".dynamic-user-header");
+    container.innerHTML = "";
+
+    const template = document.getElementById("user-header");
+    container.appendChild(template.content.cloneNode(true));
+
+    loadUserInfoIntoHeader();
 }
 
-async function submitNewMovie() {
-  const title = document.getElementById("movie-title").value.trim();
-  const director = document.getElementById("new-movie-director").value.trim();
-  const mainActor = document.getElementById("new-movie-actor").value.trim();
-  const genre = document.getElementById("new-movie-genre").value.trim();
-  const year = document.getElementById("new-movie-year").value.trim();
 
-  if (!title || !director || !mainActor || !genre || !year) {
-    alert("Preencha todos os campos!");
-    return;
-  }
 
-  const newMovie = { title, director, mainActor, genre, year };
-
-  try {
-    const resp = await fetch("/api/movies", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newMovie)
-    });
-
-    if (!resp.ok) return alert("Erro ao adicionar filme!");
-
-    alert("Filme adicionado!");
-
-    document.getElementById("new-movie-form").style.display = "none";
-    document.getElementById("movie-suggestions").style.display = "none";
-
-  } catch (e) {
-    console.error("Erro ao enviar filme:", e);
-  }
+// ===============================
+// INICIALIZA PERFIL
+// ===============================
+function initPerfilJS() {
+    injectUserHeader();
+    loadUserTopReviews();
 }
+
+
+
+// ===============================
+// INICIALIZA LOJA
+// ===============================
+function initLojaJS() {
+    injectUserHeader();
+    loadItensDaLoja();
+}
+
+
+
+// ===============================
+// NAVEGAÇÃO ENTRE PÁGINAS
+// ===============================
+const mainPanels = document.querySelector(".main-panels");
+
+function loadPage(id) {
+    const template = document.getElementById(id);
+    mainPanels.innerHTML = "";
+    mainPanels.appendChild(template.content.cloneNode(true));
+
+    document.querySelectorAll(".nav a").forEach(a => a.classList.remove("active"));
+    document.getElementById("nav-" + id.replace("page-", "")).classList.add("active");
+
+    if (id === "page-home") {
+        initHomeJS();
+        loadReviews();
+    }
+    if (id === "page-perfil") initPerfilJS();
+    if (id === "page-loja")   initLojaJS();
+}
+
+document.getElementById("nav-home").onclick   = () => loadPage("page-home");
+document.getElementById("nav-perfil").onclick = () => loadPage("page-perfil");
+document.getElementById("nav-loja").onclick   = () => loadPage("page-loja");
+
+loadPage("page-home");
