@@ -28,11 +28,11 @@ public class ReviewRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Erro ao salvar a review no banco", e);
-        }
+        } 
         return review;
     }
 
-    // carrega as n primeiras reviews
+    // carrega as n ultimas reviews
     public List<ReviewDTO> getTopReviews(int limit) {
         String sql = """
             SELECT r.id, r.rating, r.comment, u.username AS user, m.name AS movie
@@ -72,5 +72,45 @@ public class ReviewRepository {
     }
 
 
+    // carrega as n ultimas reviews de um usuario por id
+    public List<ReviewDTO> getUserTopReviews(int limit, int userid) {
+        String sql = """
+            SELECT r.id, r.rating, r.comment, u.username AS user, m.name AS movie
+            FROM reviews r
+            LEFT JOIN users u ON r.userid = u.id
+            LEFT JOIN movies m ON r.movieid = m.id
+            WHERE r.userid = ?
+            ORDER BY r.id DESC
+            LIMIT ?
+        """;
+
+        List<ReviewDTO> topReviews = new ArrayList<>();
+
+        try (Connection conn = Database.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userid);
+            stmt.setInt(2, limit);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ReviewDTO review = new ReviewDTO();
+                    review.setId(rs.getInt("id"));
+                    review.setUser(rs.getString("user"));
+                    review.setMovie(rs.getString("movie"));
+                    review.setRating(rs.getInt("rating"));
+                    review.setComment(rs.getString("comment"));
+
+                    topReviews.add(review);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao carregar as reviews do banco", e);
+        }
+
+        return topReviews;
+    }
 
 }
