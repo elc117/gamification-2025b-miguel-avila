@@ -1,7 +1,5 @@
 package com.mubification.models;
 
-import java.time.Instant;
-
 public class ReviewDTO {
     private int id;
     private String user; 
