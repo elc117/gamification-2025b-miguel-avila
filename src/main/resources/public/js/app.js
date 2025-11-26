@@ -80,11 +80,6 @@ async function loadUserTopReviews() {
     }
 }
 
-
-
-// ===============================
-// CARREGA ITENS DA LOJA
-// ===============================
 async function loadItensDaLoja() {
     try {
         const response = await fetch("/api/store/items");
@@ -99,14 +94,39 @@ async function loadItensDaLoja() {
 
             card.innerHTML = `
                 <div class="card-header">
-                  <div class="card-thumb">${item.emoji}</div>
+                  <div class="card-thumb">💸</div>
                   <div>
                     <div class="title">${item.name}</div>
                     <p class="card-text">${item.description}</p>
                     <div class="shop-price">${item.price}🪙</div>
+                    <button class="btn buy-btn">Comprar</button>
                   </div>
                 </div>
             `;
+
+            const btn = card.querySelector(".buy-btn");
+
+            btn.addEventListener("click", async () => {
+                const userId = localStorage.getItem("userid");
+
+                if (!userId) { return alert("Você precisa estar logado para comprar."); }
+
+                try {
+                    const resp = await fetch(`/api/store/buy?userid=${userId}&itemid=${item.id}`, {
+                        method: "POST"
+                    });
+
+                    const result = await resp.json();
+
+                    if (result.status === "PURCHASE_OK")            { alert("Compra realizada com sucesso!"); } 
+                    else if (result.status === "NOT_ENOUGH_POINTS") { alert("Pontos insuficientes!"); }
+                    else if (result.status === "ITEM_NOT_FOUND")    { alert("Item não encontrado!"); }
+                    loadUserInfoIntoHeader();
+                } catch (err) {
+                    console.error("Erro ao comprar item:", err);
+                    alert("Erro ao comunicar com o servidor.");
+                }
+            });
 
             container.appendChild(card);
         });
@@ -117,10 +137,6 @@ async function loadItensDaLoja() {
 }
 
 
-
-// ===============================
-// INJECT HEADER COMPARTILHADO
-// ===============================
 function injectUserHeader() {
     const container = document.querySelector(".dynamic-user-header");
     container.innerHTML = "";
@@ -140,7 +156,6 @@ function initPerfilJS() {
     injectUserHeader();
     loadUserTopReviews();
 }
-
 
 
 // ===============================

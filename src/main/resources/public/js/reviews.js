@@ -87,6 +87,7 @@ async function submitReview() {
     console.error("Erro ao enviar review:", e);
     alert("Erro de comunicação com o servidor.");
   }
+  loadReviews();
 }
 
 async function loadUserTopReviews() {

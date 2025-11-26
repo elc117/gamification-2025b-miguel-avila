@@ -468,8 +468,13 @@ footer{
   color: var(--accent);
 }
 
+.shop-price {
+  display: inline-block;
+}
+
 #loja-css {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 400px;
 }
+
