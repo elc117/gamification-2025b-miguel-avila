@@ -9,13 +9,16 @@ import java.util.List;
 public class ReviewService {
 
     private ReviewRepository reviewRepository;
-
+    private AchievementService achievementService = new AchievementService();
+    
     public ReviewService() {
         this.reviewRepository = new ReviewRepository();
     }
 
     public Review addReview(Review review) {
-        return reviewRepository.addReview(review); 
+        Review r = reviewRepository.addReview(review);
+        //achievementService.checkAchievements(review.getUserId());
+        return r;
     }
 
     public List<ReviewDTO> getTopReviews(int limit) {

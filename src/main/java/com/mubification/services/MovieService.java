@@ -8,6 +8,7 @@ import java.util.List;
 public class MovieService {
 
     private MovieRepository movieRepository;
+    // private AchievementService achievementService = new AchievementService();
 
     public MovieService() {
         this.movieRepository = new MovieRepository();
