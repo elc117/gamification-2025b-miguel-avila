@@ -27,8 +27,17 @@ public class ReviewController {
         ctx.json(topReviews);
     }
 
+    public void getUserTopReviews(Context ctx) {
+        String userIdParam = ctx.queryParam("userid");
+        int user = Integer.parseInt(userIdParam);
+        
+        List<ReviewDTO> topReviews = reviewService.getUserTopReviews(3, user);
+        ctx.json(topReviews);
+    }
+
     public void registerRoutes(Javalin app) {
-        app.post("/api/reviews", this::addReview);
-        app.get ("/api/reviews", this::getTopReviews);
+        app.post("/api/reviews",      this::addReview); 
+        app.get ("/api/reviews",      this::getTopReviews);
+        app.get("/api/reviews/top", this::getUserTopReviews);
     }
 }
