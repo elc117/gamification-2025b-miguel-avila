@@ -3,9 +3,10 @@ package com.mubification.util;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import java.net.URI;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 
 public class Database {
 
@@ -15,45 +16,44 @@ public class Database {
         try {
 
             String jdbcUrl;
-            String username = null;
-            String password = null;
+            String username;
+            String password;
 
-            if (databaseUrl.startsWith("jdbc:")) {
-                jdbcUrl = databaseUrl;
+            // Se for postgres:// ou postgresql:// → parsear corretamente
+            if (databaseUrl.startsWith("postgres://") || databaseUrl.startsWith("postgresql://")) {
 
-                String[] params = databaseUrl.split("\\?");
-                if (params.length == 2) {
-                    for (String param : params[1].split("&")) {
-                        if      (param.startsWith("user=")) { username = param.substring(5); } 
-                        else if (param.startsWith("password=")) { password = param.substring(9); }
-                    }
-                }
+                // Render e Heroku seguem este formato
+                // postgres://user:pass@host:port/dbname
+                URI uri = new URI(databaseUrl);
 
-                if (username == null || password == null) { throw new RuntimeException("URL JDBC sem user/password!"); }
+                username = uri.getUserInfo().split(":")[0];
+                password = uri.getUserInfo().split(":")[1];
 
-            } else {
-                String clean = databaseUrl.replace("postgres://", "").replace("postgresql://", "");
-
-                String[] parts = clean.split("@");
-                String[] userPass = parts[0].split(":");
-                String[] hostDb = parts[1].split("/");
-                String[] hostPort = hostDb[0].split(":");
-
-                username = userPass[0];
-                password = userPass[1];
-
-                String host = hostPort[0];
-                String port = hostPort.length > 1 ? hostPort[1] : "5432";
-                String dbName = hostDb[1];
+                String host = uri.getHost();
+                int port = uri.getPort();
+                String dbName = uri.getPath().substring(1); // remove barra inicial
 
                 jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + dbName + "?sslmode=require";
+            }
+            else if (databaseUrl.startsWith("jdbc:postgresql://")) {
+                // Já está pronto para uso
+                jdbcUrl = databaseUrl;
+
+                // extrair user/password não é necessário,
+                // o Render geralmente coloca tudo dentro da URL JDBC
+                username = null;
+                password = null;
+            }
+            else {
+                throw new IllegalArgumentException("Formato inesperado de DATABASE_URL: " + databaseUrl);
             }
 
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(jdbcUrl);
-            config.setUsername(username);
-            config.setPassword(password);
-            config.addDataSourceProperty("ssl", "true");
+
+            if (username != null) config.setUsername(username);
+            if (password != null) config.setPassword(password);
+
             config.addDataSourceProperty("sslmode", "require");
 
             dataSource = new HikariDataSource(config);
@@ -67,9 +67,11 @@ public class Database {
     }
 
     public static Connection getConnection() throws SQLException {
-        if (dataSource == null) { throw new IllegalStateException("Banco não conectado!"); }
+        if (dataSource == null) throw new IllegalStateException("Banco não conectado!");
         return dataSource.getConnection();
     }
 
-    public static DataSource getDataSource() { return dataSource; }
+    public static DataSource getDataSource() {
+        return dataSource;
+    }
 }

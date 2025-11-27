@@ -44,6 +44,8 @@ public class Main {
         userController.registerRoutes(app);
         storeController.registerRoutes(app);
 
-        app.start(7070);
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "7070"));
+        app.start(port);
+
     }
 }

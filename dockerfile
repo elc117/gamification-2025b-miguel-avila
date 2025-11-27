@@ -1,24 +1,27 @@
-# Use a imagem base do Maven
-FROM maven:3.9.4-eclipse-temurin-21-alpine AS build
+# Etapa de build com Maven + JDK 21
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 
-# Defina o diretório de trabalho
 WORKDIR /app
 
-# Copie o pom.xml e o diretório src
+# Copia arquivos do Maven primeiro para cache eficiente
 COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copia o código
 COPY src ./src
 
-# Execute o Maven para construir a aplicação
-RUN mvn clean package
+# Gera o jar "shaded"
+RUN mvn clean package -DskipTests
 
-# Use uma imagem do JDK 17 a partir de eclipse-temurin
-FROM eclipse-temurin:21 AS runtime
+# Runtime com JDK 21
+FROM eclipse-temurin:21-jre AS runtime
 
-# Copie o JAR da fase de build
+WORKDIR /app
+
 COPY --from=build /app/target/mubification-1.0-SNAPSHOT.jar app.jar
 
-# Exponha a porta em que a aplicação irá rodar
+# Exponha apenas para documentação — o Render ignora EXPOSE
 EXPOSE 8080
 
-# Comando para iniciar a aplicação
+# Start no Render usa PORT, então não force porta no código
 ENTRYPOINT ["java", "-jar", "app.jar"]
