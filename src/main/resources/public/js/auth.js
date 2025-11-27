@@ -42,7 +42,7 @@ async function doLogin() {
     console.error(e);
     alert("Erro de comunicação com o servidor.");
   }
-  window.location.href = "/app.html";
+  window.location.href = "/index.html";
 }
 
 /* Função para registro */
