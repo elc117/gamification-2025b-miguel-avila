@@ -47,6 +47,8 @@ mvn exec:java -Dexec.mainClass="com.mubification.Main"
 ## Demonstração Final
 https://github.com/user-attachments/assets/636fe44e-48dd-476b-9446-b9eb1a99f744
 
+## Diagrama de Classe
+<img width="1789" height="774" alt="class-diagram-v0 2" src="https://github.com/user-attachments/assets/4ec8bc59-ca0b-4ec8-923c-4dfe957537a5" />
 
 
 ## Referências
@@ -58,5 +60,4 @@ https://github.com/user-attachments/assets/636fe44e-48dd-476b-9446-b9eb1a99f744
 - [Javalin Tutorial](https://self-learning-java-tutorial.blogspot.com/2025/04/javalin-tutorial.html)
 - [Javalin e MySQL](https://medium.com/%40connectwithpradyumna/building-a-simple-crud-application-with-javalin-and-mysql-e58bdff585be)
 - [Github](https://github.com/Rudge/kotlin-javalin-realworld-example-app)
-  
-Eu acessei muitos outros, mas agora estou com muito sono para encontrá-los. Amanhã antes da aula eu arrumo
+
