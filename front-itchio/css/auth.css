@@ -1,0 +1,145 @@
+:root{
+  --bg:#0d0f12;
+  --panel:#111217;
+  --muted:#9aa0ab;
+  --accent:#7b61ff;
+  --accent-2:#a892ff;
+  --glass: rgba(255,255,255,0.03);
+  --card:#0f1116;
+  --radius:12px;
+  color:#e7e9ee;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(180deg,var(--bg),#060608);
+}
+
+.container{
+  width:400px;
+  padding:32px;
+  background:linear-gradient(180deg,var(--panel), rgba(255,255,255,0.02));
+  border-radius:var(--radius);
+  box-shadow:0 0 15px rgba(0,0,0,0.4);
+  position:relative;
+}
+
+h2{
+  margin:0 0 20px;
+  font-size:24px;
+  text-align:center;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:14px;
+}
+
+.form-group label{
+  color:var(--muted);
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+input{
+  padding:10px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.04);
+  border-radius:8px;
+  color:#fff;
+  outline:none;
+}
+
+input:focus{
+  border-color:var(--accent);
+}
+
+.btn{
+  margin-top:10px;
+  width:100%;
+  padding:10px;
+  border:0;
+  border-radius:8px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  font-weight:600;
+  cursor:pointer;
+  color:#07060a;
+  font-size:15px;
+}
+
+.toggle{
+  margin-top:14px;
+  text-align:center;
+  font-size:14px;
+  color:var(--muted);
+  cursor:pointer;
+}
+.toggle span{
+  color:var(--accent);
+  cursor:pointer;
+}
+
+/* Animação entre login/cadastro */
+.forms{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  height:500px;
+}
+
+.form {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  opacity: 0;
+  transform: translateX(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.form.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.form.hide-left {
+  transform: translateX(-40px);
+}
+/* Wrapper do campo de senha + ícone */
+.pass-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pass-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-pass {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: 0.2s;
+}
+
+.toggle-pass:hover {
+  opacity: 1;
+}
+
+/* ANIMAÇÃO SUAVE NO TAMANHO DO CONTAINER */
+.forms {
+  transition: height 0.35s ease;
+}

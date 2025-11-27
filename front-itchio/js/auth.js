@@ -19,7 +19,7 @@ async function doLogin() {
   if (!email || !password) return alert("Preencha todos os campos!");
 
   try {
-    const resp = await fetch('/api/auth/login', {
+    const resp = await fetch(`${API}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -42,7 +42,7 @@ async function doLogin() {
     console.error(e);
     alert("Erro de comunicação com o servidor.");
   }
-  window.location.href = "/app.html";
+  window.location.href = "/index.html";
 }
 
 /* Função para registro */
@@ -61,7 +61,7 @@ async function doRegister() {
 
   try {
     // verifica se usuário/email já existe
-    const verifyResp = await fetch('/api/users/exist', {
+    const verifyResp = await fetch(`${API}/api/users/exist`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userObj)
@@ -71,7 +71,7 @@ async function doRegister() {
     if (exists) return alert("Usuário ou email já cadastrados!");
 
     // cria usuário
-    const createResp = await fetch('/api/users', {
+    const createResp = await fetch(`${API}/api/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userObj)

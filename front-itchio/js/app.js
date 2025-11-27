@@ -1,3 +1,4 @@
+const API = "https://gamification-2025b-miguel-avila.onrender.com";
 
 // ===============================
 // CARREGA DADOS DO USUÁRIO (da API real)
@@ -7,7 +8,8 @@ async function loadUserInfoIntoHeader() {
     if (!userId) return console.error("Usuário não logado");
 
     try {
-        const response = await fetch(`/api/user/info?userid=` + userId);
+        const response = await fetch(`${API}/api/user/info?userid=` + userId);
+
         const user = await response.json();
 
         document.getElementById("user-name").textContent = user.name;
@@ -52,7 +54,8 @@ async function loadUserTopReviews() {
     if (!userId) return;
 
     try {
-        const response = await fetch(`/api/user-reviews?userid=` + userId);
+        const response = await fetch(`${API}/api/user-reviews?userid=` + userId);
+
         const reviews = await response.json();
 
         const container = document.getElementById("user-reviews-feed");
@@ -83,7 +86,8 @@ async function loadUserTopReviews() {
 
 async function loadItensDaLoja() {
     try {
-        const response = await fetch("/api/store/items");
+        const response = await fetch(`${API}/api/store/items`);
+
         const itens = await response.json();
 
         const container = document.getElementById("loja-itens-feed");
@@ -113,9 +117,10 @@ async function loadItensDaLoja() {
                 if (!userId) { return alert("Você precisa estar logado para comprar."); }
 
                 try {
-                    const resp = await fetch(`/api/store/buy?userid=${userId}&itemid=${item.id}`, {
+                    const resp = await fetch(`${API}/api/store/buy?userid=${userId}&itemid=${item.id}`, {
                         method: "POST"
                     });
+
 
                     const result = await resp.json();
 

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CineQuest — Catalogador Gamificado</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <div class="app">
+    <aside class="left">
+      <div class="sidebar panel">
+        <div class="brand">
+          <div class="logo">CQ</div>
+          <div>
+            <h1>CineQuest</h1>
+            <p>rank. review. conquer.</p>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a href="#" id="nav-home" class="active">🏷️ Home</a>
+          <a href="#" id="nav-loja"               >🪙 Loja</a>
+          <a href="#" id="nav-perfil"             >👤 Perfil</a>
+        </nav>
+
+
+        <div class="profile-mini">
+          <div class="avatar" id="mini-avatar">US</div>
+          <div class="meta">
+            <div class="name" id="mini-name">Nome do Usuário</div>
+            <div class="handle" id="mini-user">@username</div>
+          </div>
+        </div>
+      
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <div class="panel">
+        <div class="toolbar">
+          <div class="search">
+            <input placeholder="Buscar filmes, diretores, atores..." />
+          </div>
+          <button class="btn" id="new-review-btn">Nova Review</button>
+          <button class="btn ghost">Filtrar</button>
+        </div>
+      </div>
+
+      <div class="main-panels">
+
+      </div>
+
+
+      <footer>© 2025 CineQuest — inspirado por Duolingo + Letterboxd</footer>
+    </main>
+
+    <aside class="right">
+      <div class="panel small">
+        <h4>🏆 Leaderboard</h4>
+        <div class="leaderboard">
+          <ol>
+            <li>
+              <div class="rank">1</div>
+              <div class="lb-user">
+                <div>@ana</div>
+                <div class="lb-points">+420 pts</div>
+              </div>
+              <div class="lb-level">Lvl 12</div>
+            </li>
+
+            <li>
+              <div class="rank">2</div>
+              <div class="lb-user">
+                <div>@miguel</div>
+                <div class="lb-points">+380 pts</div>
+              </div>
+              <div class="lb-level">Lvl 11</div>
+            </li>
+
+            <li>
+              <div class="rank">3</div>
+              <div class="lb-user">
+                <div>@leo</div>
+                <div class="lb-points">+310 pts</div>
+              </div>
+              <div class="lb-level">Lvl 10</div>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="panel achievements-panel">
+        <h4>🏅 Conquistas</h4>
+        <div class="achievements">
+          <div class="ach">
+            <div class="icon">1</div>
+            <div class="ach-title">Primeira Review</div>
+            <div class="ach-sub">+20 pts</div>
+          </div>
+
+          <div class="ach">
+            <div class="icon">🎬</div>
+            <div class="ach-title">Maratonista</div>
+            <div class="ach-sub">assista 7 dias seguidos</div>
+          </div>
+
+          <div class="ach">
+            <div class="icon">⭐</div>
+            <div class="ach-title">Crítico</div>
+            <div class="ach-sub">10 reviews</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel quests-panel">
+        <h4>📜 Quests Diárias</h4>
+        <div class="quests">
+          <ul>
+            <li class="quest">Escreva 1 review <span class="q-reward">+15 pts</span></li>
+            <li class="quest">Avalie 3 filmes <span class="q-reward">+10 pts</span></li>
+            <li class="quest">Conecte conta <span class="q-optional">(opcional)</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+    <template id="page-home">
+      <div class="panel" id="new-review" style="display: none;">
+        <h3>📽️ Catalogar Review</h3>
+        <div class="composer">
+            <div class="movie-thumb">Poster</div>
+            <div class="fields">
+                <!-- Campo de busca para filme -->
+                <input type="text" id="movie-title" placeholder="Título do filme" oninput="searchMovies()" />
+
+                <!-- Lista de sugestões de filmes -->
+                <div id="movie-suggestions" style="display: none;">
+                    <ul id="movie-list"></ul>
+                    <button id="add-new-movie" class="btn" style="display: none;" onclick="showAddMovieForm()">Adicionar Novo Filme</button>
+                </div>
+
+                <div id="new-movie-form" style="display: none;">
+                    <!-- Novo Formulário para Adicionar Filme -->
+                    <input type="text" id="new-movie-director" placeholder="Diretor" />
+                    <input type="text" id="new-movie-actor" placeholder="Ator Principal" />
+                    <input type="text" id="new-movie-genre" placeholder="Gênero" />
+                    <input type="text" id="new-movie-year" placeholder="Ano de Lançamento" />
+
+                    <button id="submit-new-movie" class="btn" onclick="submitNewMovie()">Salvar Filme</button>
+                    <button class="btn" onclick="cancelAddMovie()">Cancelar</button>
+                </div>
+
+                <div class="meta">
+                    <div class="rating">
+                        <div class="stars">
+                            <input type="radio" id="r5" name="rating" value="5"><label for="r5"></label>
+                            <input type="radio" id="r4" name="rating" value="4"><label for="r4"></label>
+                            <input type="radio" id="r3" name="rating" value="3"><label for="r3"></label>
+                            <input type="radio" id="r2" name="rating" value="2"><label for="r2"></label>
+                            <input type="radio" id="r1" name="rating" value="1"><label for="r1"></label>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <textarea id="review-comment" placeholder="Escreva sua review..."></textarea>
+                <button class="btn" onclick="submitReview()">Enviar Review</button>
+            </div>
+        </div>
+    </div>
+
+
+
+        <div class="panel">
+          <h3>Últimas Reviews</h3>
+          <div class="feed" id="reviews-feed">
+          </div>
+        </div>
+    </template>
+
+    
+
+<!-- TEMPLATE DO CABEÇALHO DO USUÁRIO (USADO EM TODAS AS PÁGINAS) -->
+<template id="user-header">
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img id="user-avatar" src="https://via.placeholder.com/120x120" alt="Foto do usuário">
+    </div>
+    <div class="profile-info">
+      <h2 class="profile-name" id="user-name">Usuário</h2>
+      <p class="profile-handle" id="user-handle">@user</p>
+    </div>
+  </div>
+
+  <div class="profile-stats">
+    <div class="stat">
+      <span class="stat-value" id="user-followers">0</span>
+      <span class="stat-label">Seguidores</span>
+    </div>
+
+    <div class="stat">
+      <span class="stat-value" id="user-following">0</span>
+      <span class="stat-label">Seguindo</span>
+    </div>
+
+    <div class="stat">
+      <span class="stat-value" id="user-streak">🔥</span>
+      <span class="stat-label">Streak</span>
+    </div>
+
+    <div class="stat">
+      <span class="stat-value" id="user-coins">0🪙</span>
+      <span class="stat-label">Moedas</span>
+    </div>
+  </div>
+</template>
+
+
+<!-- ============================
+      PÁGINA DE PERFIL
+=============================== -->
+<template id="page-perfil">
+<div class="panel profile-panel">
+
+  <!-- Cabeçalho compartilhado -->
+  <div class="dynamic-user-header"></div>
+
+  <div class="panel">
+    <h3>Últimas Reviews</h3>
+    <div class="feed" id="user-reviews-feed">
+
+      <!-- Aqui o JS insere as reviews reais do usuário -->
+
+    </div>
+  </div>
+
+</div>
+</template>
+
+
+
+<!-- ============================
+      PÁGINA DA LOJA
+=============================== -->
+<template id="page-loja">
+<div class="panel profile-panel">
+
+  <!-- Cabeçalho compartilhado -->
+  <div class="dynamic-user-header"></div>
+
+  <div class="panel" id="loja-css">
+    <h3>Loja de Itens</h3>
+
+    <div class="feed" id="loja-itens-feed">
+
+      <!-- Aqui o JS insere os itens vindos do DB -->
+
+    </div>
+  </div>
+
+</div>
+</template>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/movies.js"></script>
+  <script src="/js/forms.js"></script>
+  <script src="/js/reviews.js"></script>
+</body>
+</html>

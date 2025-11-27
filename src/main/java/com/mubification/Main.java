@@ -36,6 +36,17 @@ public class Main {
                 staticFiles.location = Location.CLASSPATH;
             });
         });
+
+        app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "*");
+        });
+
+        app.options("/*", ctx -> {
+            ctx.status(200);
+        });
+
         app.get("/", ctx -> ctx.redirect("/auth.html"));
 
         reviewController.registerRoutes(app);  
